@@ -31,7 +31,21 @@ const updateGroupSchema = z.object({
   status: z.enum(['ACTIVE', 'INACTIVE', 'BANNED']).optional(),
 });
 
+import AutoLoginScraperService from '../../affiliate/services/AutoLoginScraperService';
+
+const autoLoginSchema = z.object({
+  shopeeEmail: z.string().optional(),
+  shopeePassword: z.string().optional(),
+  mlEmail: z.string().optional(),
+  mlPassword: z.string().optional(),
+  category: z.string().optional(),
+  limit: z.number().int().positive().optional(),
+  groups: z.array(z.string()).optional(),
+});
+
 export class PromotionController {
+  private readonly autoScraper: AutoLoginScraperService = new AutoLoginScraperService();
+
   constructor(
     private readonly bot: PromotionBotService = new PromotionBotService(),
     private readonly groupService: GroupService = new GroupService(),
@@ -39,11 +53,38 @@ export class PromotionController {
 
   public registerRoutes(app: FastifyInstance): void {
     app.post('/api/campaigns/run', this.runCampaign.bind(this));
+    app.post('/api/autologin/run', this.runAutoLoginCampaign.bind(this));
     app.get('/api/groups', this.listGroups.bind(this));
     app.post('/api/groups', this.createGroup.bind(this));
     app.patch('/api/groups/:id', this.updateGroup.bind(this));
     app.delete('/api/groups/:id', this.deleteGroup.bind(this));
     app.get('/api/health', this.health.bind(this));
+  }
+
+  private async runAutoLoginCampaign(req: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      const parsed = autoLoginSchema.parse(req.body || {});
+      logger.info({ category: parsed.category }, '▶ Executando busca automática com login');
+
+      const items = await this.autoScraper.runAutoDiscovery({
+        shopeeEmail: parsed.shopeeEmail,
+        shopeePassword: parsed.shopeePassword,
+        mlEmail: parsed.mlEmail,
+        mlPassword: parsed.mlPassword,
+        category: parsed.category || 'promoção do dia',
+        limit: parsed.limit || 5,
+      });
+
+      reply.send({
+        ok: true,
+        message: `Busca robótica concluída com sucesso. ${items.length} produtos em alta capturados.`,
+        category: parsed.category || 'geral',
+        totalFound: items.length,
+        items,
+      });
+    } catch (err) {
+      this.handleError(err, reply, 'runAutoLoginCampaign');
+    }
   }
 
   private async health(_req: FastifyRequest, reply: FastifyReply): Promise<void> {

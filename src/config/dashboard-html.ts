@@ -238,6 +238,7 @@ export const DASHBOARD_HTML = `<!doctype html>
       <button type="button" class="tab active" data-tab="shopee">🛍️ Shopee</button>
       <button type="button" class="tab" data-tab="ml">🟡 Mercado Livre</button>
       <button type="button" class="tab" data-tab="wa">🤖 Robô Próprio WhatsApp</button>
+      <button type="button" class="tab" data-tab="autologin">🔑 Login Automático (Robô Sem Mãos)</button>
       <button type="button" class="tab" data-tab="gr">👥 Grupos / Destinatários</button>
     </div>
 
@@ -302,7 +303,41 @@ export const DASHBOARD_HTML = `<!doctype html>
           </div>
         </div>
 
-        <!-- TAB GRUPOS -->
+        <!-- TAB LOGIN AUTOMATICO -->
+        <div class="cred-pane subg" data-pane="autologin" style="display:none">
+          <div class="f full">
+            <div style="background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.35);padding:16px 18px;border-radius:14px;color:#e9d5ff;margin-bottom:6px;">
+              <h3 style="margin:0 0 6px;font-size:15px;color:#d8b4fe;display:flex;align-items:center;gap:8px;">
+                🔑 Robô Sem Mãos (Login & Busca 100% Automática)
+              </h3>
+              <p style="margin:0;font-size:13px;line-height:1.6;color:#f3e8ff;">
+                Forneça suas credenciais abaixo. O robô faz login nas centrais de afiliados da Shopee e Mercado Livre, navega pelas <b>Ofertas com Maiores Descontos</b> do dia, extrai os produtos em alta e envia para os grupos sem precisar de links manuais!
+              </p>
+            </div>
+          </div>
+          <div class="f w6"><label class="l">E-mail / Login Shopee Afiliados</label><input name="shopee_login_email" type="text" placeholder="seu-email@gmail.com" /></div>
+          <div class="f w6"><label class="l">Senha Shopee Afiliados</label><input name="shopee_login_pass" type="password" placeholder="••••••••••••" /></div>
+          <div class="f w6"><label class="l">E-mail / Login Mercado Livre Afiliados</label><input name="ml_login_email" type="text" placeholder="seu-email@gmail.com" /></div>
+          <div class="f w6"><label class="l">Senha Mercado Livre Afiliados</label><input name="ml_login_pass" type="password" placeholder="••••••••••••" /></div>
+          <div class="f w6">
+            <label class="l">Categoria de Produtos Desejada</label>
+            <select name="auto_category">
+              <option value="ofertas do dia" selected>🔥 Ofertas do Dia / Maiores Descontos</option>
+              <option value="eletronicos">📱 Eletrônicos & Celulares</option>
+              <option value="casa e cozinha">🏠 Casa & Cozinha</option>
+              <option value="moda">👕 Moda & Acessórios</option>
+              <option value="utilidades">🛠️ Utilidades Domésticas</option>
+            </select>
+          </div>
+          <div class="f w6">
+            <label class="l">Frequência de Varredura Automática</label>
+            <select name="auto_interval">
+              <option value="30">⏱️ A cada 30 minutos</option>
+              <option value="60" selected>⏰ A cada 1 hora (Recomendado)</option>
+              <option value="120">⌛ A cada 2 horas</option>
+            </select>
+          </div>
+        </div>
         <div class="cred-pane subg" data-pane="gr" style="display:none">
           <div class="f full">
             <label class="l">Grupos / Contatos (1 por linha) · formato JID:<br><small>Grupos: <code style="color:#c4b5fd">120363123456789012@g.us</code> · Contatos: <code style="color:#c4b5fd">5511999998888@c.us</code></small></label>
@@ -314,6 +349,7 @@ export const DASHBOARD_HTML = `<!doctype html>
 
       <div class="row">
         <button id="saveBtn" type="button" class="b-primary">💾 Salvar Credenciais em Memória</button>
+        <button id="autoRunBtn" type="button" class="b-primary" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">🔑 Executar Robô de Busca Automática (Com Login)</button>
         <button id="campaignBtn" type="button" class="b-success">▶️ Autenticar, Buscar e Publicar Campanha Completa</button>
         <button id="healthBtn" type="button" class="b-ghost">🧪 Testar /health</button>
         <button id="groupsBtn" type="button" class="b-ghost">👥 Listar Grupos</button>
@@ -469,6 +505,25 @@ export const DASHBOARD_HTML = `<!doctype html>
     const r = await safeFetch('/api/groups');
     prettyResult('cfgResult', r.ok ? r.body : { status:r.status, ...r.body }, !r.ok);
   });
+
+  const autoRunEl = document.getElementById('autoRunBtn');
+  if (autoRunEl) {
+    autoRunEl.addEventListener('click', async () => {
+      prettyResult('cfgResult', '🔑 Executando Robô de Busca Automática via Login em /api/autologin/run...');
+      const f = document.getElementById('cfgForm');
+      const fd = new FormData(f);
+      const payload = {
+        shopeeEmail: (fd.get('shopee_login_email') || '').toString(),
+        shopeePassword: (fd.get('shopee_login_pass') || '').toString(),
+        mlEmail: (fd.get('ml_login_email') || '').toString(),
+        mlPassword: (fd.get('ml_login_pass') || '').toString(),
+        category: (fd.get('auto_category') || 'ofertas do dia').toString(),
+        limit: 5,
+      };
+      const r = await safeFetch('/api/autologin/run', { method: 'POST', body: JSON.stringify(payload) });
+      prettyResult('cfgResult', r.ok ? r.body : { status: r.status, ...r.body }, !r.ok);
+    });
+  }
 
   document.getElementById('runBtn').addEventListener('click', async () => {
     const platforms = document.getElementById('platforms').value;
