@@ -25,3 +25,6 @@ coverage/
 .tool-configs/
 deploy.log
 
+
+.vercel
+.env*

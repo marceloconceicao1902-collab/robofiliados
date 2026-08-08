@@ -290,13 +290,13 @@ export const DASHBOARD_HTML = `<!doctype html>
   ];
   const TBMAP = {GET:'mGET',POST:'mPOST',PATCH:'mPATCH'};
   const tb = document.getElementById('tbEndpoints');
-  tb.innerHTML = endpoints.map(e => `
-    <tr>
-      <td><span class="pillm ${TBMAP[e.m]||'mGET'}">${e.m}</span></td>
-      <td><a href="${e.r.startsWith('http')?e.r:e.r}" target="_blank" rel="noopener" style="color:#c7d2fe;text-decoration:none;font-family:ui-monospace,Menlo,monospace">${e.r}</a></td>
-      <td style="color:#cbd5e1">${e.d}</td>
-    </tr>
-  `).join('');
+  tb.innerHTML = endpoints.map(e =>
+    '<tr>' +
+      '<td><span class="pillm ' + (TBMAP[e.m]||'mGET') + '">' + e.m + '</span></td>' +
+      '<td><a href="' + e.r + '" target="_blank" rel="noopener" style="color:#c7d2fe;text-decoration:none;font-family:ui-monospace,Menlo,monospace">' + e.r + '</a></td>' +
+      '<td style="color:#cbd5e1">' + e.d + '</td>' +
+    '</tr>'
+  ).join('');
 
   function setBadgeOk(txt, ok=true){
     const b=document.getElementById('statusBadge');
