@@ -11,7 +11,7 @@ param(
   [string]$GithubOwner      = "marceloconceicao1902-collab",
   [string]$GithubRepo       = "robofiliados",
   [string]$VercelProject    = "robofiliados",
-  [string]$FirebaseProjId   = "robofiliados-$([DateTime]::Now.ToString('yyMMdd'))",
+  [string]$FirebaseProjId   = "robo-afiliados-e7f47",
   [string]$FirebaseProjName = "Robo Filiados ML Shoppe",
   [string]$GitSSD           = "C:\Users\marce\AppData\Local\Temp\affiliate-git.git",
   [string]$NodeModulesPath  = "C:\Users\marce\AppData\Local\Temp\affiliate-install\node_modules"
