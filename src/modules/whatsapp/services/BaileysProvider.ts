@@ -1,19 +1,5 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import makeWASocket, {
-  type AnyMessageContent,
-  DisconnectReason,
-  fetchLatestBaileysVersion,
-  isJidGroup,
-  makeCacheableSignalKeyStore,
-  proto,
-  useMultiFileAuthState,
-  type WAMessageKey,
-  type ConnectionState,
-  type WAMessage,
-} from '@whiskeysockets/baileys';
-import { Boom } from '@hapi/boom';
-import NodeCache from 'node-cache';
 import P from 'pino';
 import qrcode from 'qrcode-terminal';
 import { env } from '../../../config/env';
@@ -21,10 +7,58 @@ import { logger } from '../../../config/logger';
 import { WhatsAppServiceError } from '../../../shared/errors/AppError';
 import type { WhatsAppProvider } from '../../../shared/interfaces';
 
-const msgRetryCache = new NodeCache({ stdTTL: 60 * 30 });
+type BaileysDeps = {
+  default: any;
+  fetchLatestBaileysVersion: any;
+  makeCacheableSignalKeyStore: any;
+  useMultiFileAuthState: any;
+  isJidGroup: any;
+  DisconnectReason: any;
+  proto: any;
+  Boom: any;
+  NodeCache: any;
+};
+
+let baileysLazy: Promise<BaileysDeps> | null = null;
+async function ensureBaileysDeps(): Promise<BaileysDeps> {
+  if (baileysLazy) return baileysLazy;
+  baileysLazy = (async () => {
+    const [
+      {
+        default: makeWASocket,
+        fetchLatestBaileysVersion,
+        isJidGroup,
+        makeCacheableSignalKeyStore,
+        proto,
+        useMultiFileAuthState,
+        DisconnectReason,
+      },
+      { Boom },
+      { default: NodeCache },
+    ] = await Promise.all([
+      import('@whiskeysockets/baileys'),
+      import('@hapi/boom'),
+      import('node-cache'),
+    ]);
+    return {
+      default: makeWASocket,
+      fetchLatestBaileysVersion,
+      makeCacheableSignalKeyStore,
+      useMultiFileAuthState,
+      isJidGroup,
+      DisconnectReason,
+      proto,
+      Boom,
+      NodeCache,
+    };
+  })();
+  return baileysLazy;
+}
+
+let msgRetryCache: any = null;
 
 export class BaileysProvider implements WhatsAppProvider {
-  private sock?: ReturnType<typeof makeWASocket>;
+  private sock?: any;
   private connected = false;
   private readonly sessionFolder: string;
   private readonly sessionName: string;
@@ -39,6 +73,22 @@ export class BaileysProvider implements WhatsAppProvider {
   }
 
   public async connect(): Promise<void> {
+    const baileys = await ensureBaileysDeps();
+    const {
+      default: makeWASocket,
+      fetchLatestBaileysVersion,
+      useMultiFileAuthState,
+      makeCacheableSignalKeyStore,
+      DisconnectReason,
+      proto,
+      Boom,
+      NodeCache,
+    } = baileys;
+
+    if (!msgRetryCache) {
+      msgRetryCache = new NodeCache({ stdTTL: 60 * 30 });
+    }
+
     const sessionPath = path.resolve(this.sessionFolder, this.sessionName);
     if (!fs.existsSync(sessionPath)) {
       fs.mkdirSync(sessionPath, { recursive: true });
@@ -46,7 +96,7 @@ export class BaileysProvider implements WhatsAppProvider {
 
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
     const { version, isLatest } = await fetchLatestBaileysVersion();
-    logger.info({ version, isLatest }, 'Versão Baileys carregada');
+    logger.info({ version, isLatest }, 'Versao Baileys carregada');
 
     this.sock = makeWASocket({
       version,
@@ -61,10 +111,8 @@ export class BaileysProvider implements WhatsAppProvider {
       retryRequestDelayMs: 5000,
       msgRetryCounterCache: msgRetryCache as any,
       generateHighQualityLinkPreview: true,
-      getMessage: async (key: WAMessageKey) => {
-        const store = (msgRetryCache as any).get(
-          key.id || '',
-        );
+      getMessage: async (key: any) => {
+        const store = (msgRetryCache as any).get(key.id || '');
         return store ?? proto.Message.fromObject({});
       },
     });
@@ -77,11 +125,11 @@ export class BaileysProvider implements WhatsAppProvider {
       }, 1000 * 60 * 2);
 
       if (!this.sock) {
-        reject(new WhatsAppServiceError('Socket não inicializado'));
+        reject(new WhatsAppServiceError('Socket nao inicializado'));
         return;
       }
 
-      this.sock.ev.on('connection.update', (update: Partial<ConnectionState>) => {
+      this.sock.ev.on('connection.update', (update: any) => {
         const { connection, lastDisconnect, qr } = update;
 
         if (qr) {
@@ -90,15 +138,15 @@ export class BaileysProvider implements WhatsAppProvider {
         }
 
         if (connection === 'close') {
-          const code = (lastDisconnect?.error as Boom)?.output?.statusCode;
+          const code = (lastDisconnect?.error as any)?.output?.statusCode;
           const shouldReconnect = code !== DisconnectReason.loggedOut;
-          logger.warn({ code, shouldReconnect }, 'Conexão WhatsApp fechada');
+          logger.warn({ code, shouldReconnect }, 'Conexao WhatsApp fechada');
 
           if (code === DisconnectReason.loggedOut) {
             clearTimeout(timeout);
             reject(
               new WhatsAppServiceError(
-                'WhatsApp desconectado (logged out). Recrie a sessão.',
+                'WhatsApp desconectado (logged out). Recrie a sessao.',
               ),
             );
             return;
@@ -107,7 +155,7 @@ export class BaileysProvider implements WhatsAppProvider {
           if (shouldReconnect) {
             logger.info('Tentando reconectar...');
             this.connect().catch((err: unknown) =>
-              logger.error({ err }, 'Erro na reconexão'),
+              logger.error({ err }, 'Erro na reconexao'),
             );
           }
         } else if (connection === 'open') {
@@ -118,7 +166,7 @@ export class BaileysProvider implements WhatsAppProvider {
         }
       });
 
-      this.sock.ev.on('messages.upsert', ({ messages }: { messages: WAMessage[] }) => {
+      this.sock.ev.on('messages.upsert', ({ messages }: { messages: any[] }) => {
         for (const m of messages) {
           if (m.key.id) {
             (msgRetryCache as any).set(
@@ -134,7 +182,7 @@ export class BaileysProvider implements WhatsAppProvider {
   public async disconnect(): Promise<void> {
     try {
       if (this.sock) {
-        await this.sock.end(new Error('Solicitado desconexão pelo usuário'));
+        await this.sock.end(new Error('Solicitado desconexao pelo usuario'));
       }
     } catch (err: unknown) {
       logger.warn({ err }, 'Erro ao desconectar WhatsApp (ignorado)');
@@ -151,7 +199,7 @@ export class BaileysProvider implements WhatsAppProvider {
     this.ensureConnected();
     try {
       const jid = this.ensureGroupJid(toId);
-      const content: AnyMessageContent = { text };
+      const content: any = { text };
       const result = await this.sock!.sendMessage(jid, content);
       return !!result;
     } catch (err: unknown) {
@@ -168,7 +216,7 @@ export class BaileysProvider implements WhatsAppProvider {
     this.ensureConnected();
     try {
       const jid = this.ensureGroupJid(toId);
-      const content: AnyMessageContent = {
+      const content: any = {
         image: { url: imageUrl },
         caption,
         mimetype: 'image/jpeg',
@@ -183,12 +231,16 @@ export class BaileysProvider implements WhatsAppProvider {
 
   private ensureConnected(): void {
     if (!this.connected || !this.sock) {
-      throw new WhatsAppServiceError('WhatsApp não está conectado. Chame connect() primeiro.');
+      throw new WhatsAppServiceError('WhatsApp nao esta conectado. Chame connect() primeiro.');
     }
   }
 
   private ensureGroupJid(groupId: string): string {
-    if (isJidGroup(groupId)) return groupId;
+    if (msgRetryCache) {
+      const { isJidGroup } = baileysLazy
+        ? ({} as any)
+        : ({} as any);
+    }
     if (groupId.includes('@g.us')) return groupId;
     if (/^\d+$/.test(groupId)) {
       return `${groupId}@g.us`;
