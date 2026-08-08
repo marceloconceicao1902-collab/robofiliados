@@ -22,4 +22,6 @@ coverage/
 .pnp
 .pnp.js
 .yarn/install-state.gz
+.tool-configs/
+deploy.log
 
