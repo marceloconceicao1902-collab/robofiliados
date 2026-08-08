@@ -281,6 +281,11 @@ export const DASHBOARD_HTML = `<!doctype html>
                 2. Escaneie o <b>QR Code</b> gerado no terminal/console na primeira execução.<br>
                 3. A sessão é salva na pasta de autenticação <code>./baileys_auth</code> (ou <code>./sessions</code>).
               </div>
+              <div style="margin-top:14px">
+                <button id="connectWaBtn" type="button" class="b-success" style="font-size:14px;padding:12px 20px">
+                  ⚡ Conectar / Iniciar Robô WhatsApp Nativo (Baileys) Agora
+                </button>
+              </div>
             </div>
           </div>
           <div class="f w6">
@@ -504,7 +509,14 @@ export const DASHBOARD_HTML = `<!doctype html>
   document.getElementById('groupsBtn').addEventListener('click', async () => {
     const r = await safeFetch('/api/groups');
     prettyResult('cfgResult', r.ok ? r.body : { status:r.status, ...r.body }, !r.ok);
-  });
+  const connectWaEl = document.getElementById('connectWaBtn');
+  if (connectWaEl) {
+    connectWaEl.addEventListener('click', async () => {
+      prettyResult('cfgResult', '⚡ Conectando/Iniciando Robô WhatsApp Nativo (Baileys) via /api/whatsapp/connect...');
+      const r = await safeFetch('/api/whatsapp/connect', { method: 'POST' });
+      prettyResult('cfgResult', r.ok ? r.body : { status: r.status, ...r.body }, !r.ok);
+    });
+  }
 
   const autoRunEl = document.getElementById('autoRunBtn');
   if (autoRunEl) {

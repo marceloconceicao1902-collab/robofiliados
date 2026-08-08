@@ -54,11 +54,26 @@ export class PromotionController {
   public registerRoutes(app: FastifyInstance): void {
     app.post('/api/campaigns/run', this.runCampaign.bind(this));
     app.post('/api/autologin/run', this.runAutoLoginCampaign.bind(this));
+    app.post('/api/whatsapp/connect', this.connectWhatsApp.bind(this));
     app.get('/api/groups', this.listGroups.bind(this));
     app.post('/api/groups', this.createGroup.bind(this));
     app.patch('/api/groups/:id', this.updateGroup.bind(this));
     app.delete('/api/groups/:id', this.deleteGroup.bind(this));
     app.get('/api/health', this.health.bind(this));
+  }
+
+  private async connectWhatsApp(_req: FastifyRequest, reply: FastifyReply): Promise<void> {
+    try {
+      logger.info('▶ Iniciando conexão Baileys nativa via requisição do Dashboard...');
+      await this.bot.ensureConnected();
+      reply.send({
+        ok: true,
+        message: 'Conexão do Robô WhatsApp iniciada com sucesso. Verifique o console/terminal para escaneamento do QR Code se for a primeira vez.',
+        connected: this.bot.whatsApp.isConnected(),
+      });
+    } catch (err) {
+      this.handleError(err, reply, 'connectWhatsApp');
+    }
   }
 
   private async runAutoLoginCampaign(req: FastifyRequest, reply: FastifyReply): Promise<void> {
