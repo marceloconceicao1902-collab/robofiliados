@@ -1,40 +1,48 @@
 import axios from 'axios';
 import { env } from '../../../config/env';
+import runtimeConfig from '../../../config/runtime-config';
 import { logger } from '../../../config/logger';
 import { WhatsAppServiceError } from '../../../shared/errors/AppError';
 import type { WhatsAppProvider } from '../../../shared/interfaces';
 
+function resolveEvolutionCfg(): { apiUrl: string; apiKey: string; instance: string } {
+  const r = runtimeConfig.get().evolution;
+  const apiUrlRaw = r.apiUrl || env.EVOLUTION_API_URL || '';
+  const apiKey = r.apiKey || env.EVOLUTION_API_KEY || '';
+  const instance = r.instanceName || env.EVOLUTION_INSTANCE_NAME || '';
+  return { apiUrl: apiUrlRaw.replace(/\/$/, ''), apiKey, instance };
+}
+
 export class EvolutionApiProvider implements WhatsAppProvider {
-  private readonly apiUrl: string;
-  private readonly apiKey: string;
-  private readonly instance: string;
   private _connected = false;
 
-  constructor(
-    apiUrl = env.EVOLUTION_API_URL,
-    apiKey = env.EVOLUTION_API_KEY,
-    instance = env.EVOLUTION_INSTANCE_NAME,
-  ) {
-    this.apiUrl = apiUrl.replace(/\/$/, '');
-    this.apiKey = apiKey;
-    this.instance = instance;
+  constructor() {}
+
+  private get cfg() {
+    return resolveEvolutionCfg();
   }
 
   public async connect(): Promise<void> {
+    const { apiUrl, apiKey, instance } = this.cfg;
     try {
-      const url = `${this.apiUrl}/chat/findContacts/${this.instance}`;
+      if (!apiUrl || !apiKey || !instance) {
+        logger.warn('Evolution credenciais ausentes (preencha no painel /); marcando connected=false safe mode.');
+        this._connected = false;
+        return;
+      }
+      const url = `${apiUrl}/instance/findContacts/${instance}`;
       const response = await axios.get(url, {
         headers: this.headers(),
         timeout: 10000,
       });
       if (response.status >= 200 && response.status < 300) {
         this._connected = true;
-        logger.info(`Evolution API conectado (instância: ${this.instance})`);
+        logger.info(`Evolution API conectado (instância: ${instance})`);
         return;
       }
       throw new WhatsAppServiceError(`Falha ao validar Evolution API: status ${response.status}`);
     } catch (err) {
-      logger.warn({ err }, 'Não foi possível validar Evolution API; tentando usar send direto.');
+      logger.warn({ err }, 'Não foi possível validar Evolution API; tentando usar send direto (safe connected=true).');
       this._connected = true;
     }
   }
@@ -44,11 +52,13 @@ export class EvolutionApiProvider implements WhatsAppProvider {
   }
 
   public isConnected(): boolean {
-    return this._connected;
+    const c = this.cfg;
+    return this._connected && !!c.apiUrl && !!c.apiKey && !!c.instance;
   }
 
   public async sendTextMessage(toId: string, text: string): Promise<boolean> {
-    const url = `${this.apiUrl}/message/sendText/${this.instance}`;
+    const { apiUrl, instance } = this.cfg;
+    const url = `${apiUrl}/message/sendText/${instance}`;
     const payload = {
       number: this.normalizeNumber(toId),
       text,
@@ -60,7 +70,8 @@ export class EvolutionApiProvider implements WhatsAppProvider {
   }
 
   public async sendImageMessage(toId: string, caption: string, imageUrl: string): Promise<boolean> {
-    const url = `${this.apiUrl}/message/sendMedia/${this.instance}`;
+    const { apiUrl, instance } = this.cfg;
+    const url = `${apiUrl}/message/sendMedia/${instance}`;
     const payload = {
       number: this.normalizeNumber(toId),
       mediatype: 'image',
@@ -81,7 +92,7 @@ export class EvolutionApiProvider implements WhatsAppProvider {
 
   private headers(): Record<string, string> {
     return {
-      apikey: this.apiKey,
+      apikey: this.cfg.apiKey,
       'Content-Type': 'application/json',
     };
   }

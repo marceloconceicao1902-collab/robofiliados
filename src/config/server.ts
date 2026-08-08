@@ -1,8 +1,34 @@
 import fastify, { type FastifyInstance, type FastifyServerOptions, type FastifyRequest, type FastifyReply } from 'fastify';
+import { z } from 'zod';
 import { env } from './env';
 import { logger } from './logger';
 import PromotionController from '../modules/promotion/controllers/PromotionController';
 import { DASHBOARD_HTML } from './dashboard-html';
+import { runtimeConfig, type RuntimeConfigShape } from './runtime-config';
+import { applyCredentialsToEnv, parseGroupsListText } from '../shared/utils/apply-credentials';
+
+const ConfigPostSchema = z.object({
+  shopee: z.object({
+    appId: z.string().default(''),
+    appSecret: z.string().default(''),
+    tag: z.string().default(''),
+    sandbox: z.boolean().default(true),
+  }).partial().optional(),
+  mercadolivre: z.object({
+    clientId: z.string().default(''),
+    clientSecret: z.string().default(''),
+    accessToken: z.string().default(''),
+    tag: z.string().default(''),
+    sandbox: z.boolean().default(true),
+  }).partial().optional(),
+  evolution: z.object({
+    apiUrl: z.string().default(''),
+    apiKey: z.string().default(''),
+    instanceName: z.string().default(''),
+  }).partial().optional(),
+  groups: z.array(z.string()).optional(),
+  groupsText: z.string().optional(),
+});
 
 export function createServer(
   controller: PromotionController = new PromotionController(),
@@ -24,6 +50,39 @@ export function createServer(
       .header('Pragma', 'no-cache')
       .header('Expires', '0')
       .send(DASHBOARD_HTML);
+  });
+
+  app.get('/api/config', async (_: FastifyRequest, reply: FastifyReply) => {
+    applyCredentialsToEnv();
+    reply.send({
+      ok: true,
+      masks: runtimeConfig.getMasks(),
+    });
+  });
+
+  app.post('/api/config', async (req: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const parsed = ConfigPostSchema.parse(req.body || {});
+      const patch: Partial<RuntimeConfigShape> = {};
+      if (parsed.shopee) patch.shopee = parsed.shopee as any;
+      if (parsed.mercadolivre) patch.mercadolivre = parsed.mercadolivre as any;
+      if (parsed.evolution) patch.evolution = parsed.evolution as any;
+      if (parsed.groups) patch.groups = parsed.groups;
+      else if (typeof parsed.groupsText === 'string') patch.groups = parseGroupsListText(parsed.groupsText);
+      runtimeConfig.set(patch);
+      applyCredentialsToEnv();
+      reply.status(200).send({
+        ok: true,
+        message: 'Credenciais gravadas em memória (singleton runtime). Cold start limpa tudo automaticamente.',
+        masks: runtimeConfig.getMasks(),
+      });
+    } catch (e: any) {
+      reply.status(400).send({
+        ok: false,
+        error: 'ValidationError',
+        message: e?.message || 'Body inválido para /api/config',
+      });
+    }
   });
 
   controller.registerRoutes(app);
