@@ -1,0 +1,91 @@
+// ============================================
+// Prisma Schema - Affiliate Promotion Bot
+// Banco: SQLite (não suporta enuns nativos no Prisma)
+// Campos de tipo "enum" são String + restrição via código
+// ============================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// GROUP - Grupos de WhatsApp cadastrados
+// status: 'ACTIVE' | 'INACTIVE' | 'BANNED'
+// ============================================
+
+model Group {
+  id           String        @id @default(cuid())
+  groupId      String        @unique
+  name         String
+  inviteLink   String?
+  category     String?
+  status       String        @default("ACTIVE")
+  priority     Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  sentHistory  SentHistory[]
+
+  @@index([status])
+  @@index([priority])
+}
+
+// ============================================
+// PRODUCT - Produtos capturados e processados
+// platform: 'SHOPEE' | 'MERCADO_LIVRE' | 'GENERIC'
+// ============================================
+
+model Product {
+  id                 String    @id @default(cuid())
+  originalUrl        String
+  affiliateUrl       String
+  shortUrl           String?
+  platform           String
+  productId          String?
+  title              String
+  description        String?
+  imageUrl           String?
+  originalPrice      Decimal?
+  discountPrice      Decimal?
+  discountPercentage Int?
+  category           String?
+  brand              String?
+  hash               String    @unique
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  sentHistory        SentHistory[]
+
+  @@index([platform])
+  @@index([createdAt])
+}
+
+// ============================================
+// SENT_HISTORY - Histórico de tudo que foi enviado
+// status: 'PENDING' | 'SENT' | 'FAILED' | 'SKIPPED_DUPLICATE' | 'SKIPPED_RATE_LIMIT'
+// ============================================
+
+model SentHistory {
+  id             String     @id @default(cuid())
+  productId      String
+  groupId        String
+  status         String     @default("PENDING")
+  uniqueHash     String     @unique
+  errorMessage   String?
+  sentAt         DateTime?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  product        Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  group          Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([groupId])
+  @@index([status])
+  @@index([sentAt])
+}

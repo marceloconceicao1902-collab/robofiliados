@@ -1,0 +1,68 @@
+{
+  "name": "affiliate-promotion-bot",
+  "version": "1.0.0",
+  "description": "Plataforma de automação de afiliados para Shopee e Mercado Livre com envio em massa no WhatsApp",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& node dist/index.js",
+    "install:all": "npm install --include=dev --legacy-peer-deps --force",
+    "prisma:generate": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& prisma generate",
+    "prisma:migrate": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& prisma migrate dev --name init",
+    "prisma:studio": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& prisma studio",
+    "lint": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& eslint src --ext .ts",
+    "lint:fix": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "keywords": [
+    "affiliate",
+    "shopee",
+    "mercado-livre",
+    "whatsapp",
+    "bot",
+    "promotion",
+    "automation"
+  ],
+  "author": "Affiliate Bot Team",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@prisma/client": "^5.18.0",
+    "@whiskeysockets/baileys": "^6.7.8",
+    "axios": "^1.7.4",
+    "bullmq": "^5.12.12",
+    "cheerio": "^1.0.0",
+    "cron": "^3.1.7",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1",
+    "ioredis": "^5.4.1",
+    "link-preview-js": "^3.0.12",
+    "nanoid": "^3.3.7",
+    "node-cache": "^5.1.2",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.2",
+    "qrcode-terminal": "^0.12.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.4.0",
+    "@types/node-cache": "^4.2.5",
+    "@types/qrcode-terminal": "^0.12.2",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
+    "eslint": "^9.9.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "prisma": "^5.18.0",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4"
+  },
+  "overrides": {
+    "libsignal": "npm:libsignal-node@2.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

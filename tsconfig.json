@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["ES2022"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"],
+    "typeRoots": [
+      "C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/@types",
+      "node_modules/@types"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@config/*": ["src/config/*"],
+      "@modules/*": ["src/modules/*"],
+      "@shared/*": ["src/shared/*"],
+      "@database/*": ["src/database/*"],
+      "@prisma/client": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/@prisma/client"],
+      "axios": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/axios"],
+      "cheerio": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/cheerio"],
+      "zod": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/zod"],
+      "nanoid": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/nanoid"],
+      "node:*": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/@types/node/*"],
+      "*": ["C:/Users/marce/AppData/Local/Temp/affiliate-install/node_modules/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "prisma",
+    "sessions",
+    "src/modules/affiliate/services/ShopeeStrategy.ts",
+    "src/modules/affiliate/services/MercadoLivreStrategy.ts",
+    "src/modules/affiliate/services/IAffiliateStrategy.ts",
+    "src/modules/affiliate/interfaces/IAffiliateStrategy.ts"
+  ]
+}
