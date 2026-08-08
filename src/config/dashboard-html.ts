@@ -151,6 +151,38 @@ export const DASHBOARD_HTML = `<!doctype html>
     <div class="card"><div class="lbl">Anti-Dupl (h)</div><div class="val"><span id="dupVal" class="pill amber">24h</span></div></div>
   </div>
 
+  <section class="section" style="background:linear-gradient(135deg,rgba(30,27,75,.6),rgba(15,23,42,.7));border-color:rgba(99,102,241,.25)">
+    <h2 class="s"><span class="ico">📖</span> Guia Rápido: Como Conectar o WhatsApp e Definir Grupos</h2>
+    
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-top:14px">
+      <!-- CARD 1: NUMERO REMETENTE -->
+      <div style="background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:18px">
+        <h3 style="margin:0 0 10px;font-size:15px;color:#a5b4fc;display:flex;align-items:center;gap:8px">
+          📱 1. Definir o Número do WhatsApp (Remetente)
+        </h3>
+        <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:#cbd5e1">
+          <li>Execute <code>npm run dev</code> no seu computador ou servidor.</li>
+          <li>O terminal exibirá um <b>QR Code</b> na tela.</li>
+          <li>No WhatsApp do celular, acesse <b>Menu ➔ Dispositivos Conectados ➔ Conectar um dispositivo</b> e escaneie o QR Code.</li>
+          <li>Pronto! O robô assume automaticamente aquele número como remetente. A sessão fica salva na pasta <code>./baileys_auth</code>.</li>
+        </ol>
+      </div>
+
+      <!-- CARD 2: GRUPOS DESTINATARIOS -->
+      <div style="background:rgba(15,23,42,.7);border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:18px">
+        <h3 style="margin:0 0 10px;font-size:15px;color:#6ee7b7;display:flex;align-items:center;gap:8px">
+          👥 2. Definir os Grupos de Destino
+        </h3>
+        <ol style="margin:0;padding-left:18px;font-size:13px;line-height:1.6;color:#cbd5e1">
+          <li>Acesse a aba <b>👥 Grupos / Destinatários</b> no painel abaixo.</li>
+          <li>Cole os IDs dos grupos no formato <code>ID@g.us</code> (um por linha). Ex: <code>120363123456789012@g.us</code>.</li>
+          <li>Para descobrir os IDs dos seus grupos automaticamente, clique no botão <b>👥 Listar Grupos</b>. O robô trará a lista formatada com nomes e IDs!</li>
+          <li>Clique em <b>💾 Salvar Credenciais em Memória</b> para confirmar.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <h2 class="s"><span class="ico">▦</span>Painel de Credenciais e Automação (Shopee + ML + Robô Próprio)</h2>
     <div style="color:#94a3b8;font-size:13.5px;margin:-6px 0 18px">Preencha abaixo as credenciais. As informações são mantidas em memória singleton (ou configuradas via Environment Variables na Vercel/VPS).</div>
