@@ -24,7 +24,7 @@ const envSchema = z.object({
   ML_ACCESS_TOKEN: z.string().default(''),
   ML_SANDBOX: z.coerce.boolean().default(true),
 
-  WHATSAPP_PROVIDER: z.enum(['baileys', 'evolution']).default('evolution'),
+  WHATSAPP_PROVIDER: z.enum(['baileys', 'evolution']).default('baileys'),
   WA_SESSION_FOLDER: z.string().default('./sessions'),
   WA_SESSION_NAME: z.string().default('default'),
   EVOLUTION_API_URL: z.string().default('http://localhost:8080'),

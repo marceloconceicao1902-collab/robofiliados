@@ -19,7 +19,7 @@ export const DASHBOARD_HTML = `<!doctype html>
   }
   .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 60px}
   header.h{
-    display:flex;align-items:center;justify-content:space-between;gap:16px;
+    display:flex;align-items:center;justify-space-between;gap:16px;
     padding:18px 20px;border-radius:18px;
     background:linear-gradient(135deg,rgba(79,70,229,.22),rgba(168,85,247,.16) 45%,rgba(236,72,153,.14));
     border:1px solid rgba(148,163,184,.15);
@@ -58,25 +58,35 @@ export const DASHBOARD_HTML = `<!doctype html>
   .section{margin-top:26px;background:rgba(15,23,42,.6);border:1px solid rgba(148,163,184,.12);border-radius:20px;padding:22px;box-shadow:0 10px 28px rgba(0,0,0,.22)}
   h2.s{margin:0 0 14px;font-size:17px;display:flex;align-items:center;gap:10px}
   h2.s .ico{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#a855f7);color:white;font-weight:900;font-size:15px}
-  .cred-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px}
-  .f{display:flex;flex-direction:column;gap:6px;grid-column:span 6}
+  
+  /* GRID CORRIGIDO */
+  .cred-grid{width:100%;display:block;margin-top:14px}
+  .cred-pane{width:100%;box-sizing:border-box}
+  .subg{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;width:100%;box-sizing:border-box}
+  .f{display:flex;flex-direction:column;gap:6px;box-sizing:border-box;width:100%}
   .f.full{grid-column:1 / -1}
   .f.w3{grid-column:span 3}
   .f.w4{grid-column:span 4}
   .f.w6{grid-column:span 6}
   .f.w8{grid-column:span 8}
   @media(max-width:880px){.f,.f.w3,.f.w4,.f.w6,.f.w8{grid-column:1/-1}}
-  label.l{font-size:12.5px;color:#cbd5e1;font-weight:600}
-  label.l small{color:#94a3b8;font-weight:500}
+  
+  label.l{font-size:13px;color:#cbd5e1;font-weight:600;display:block}
+  label.l small{color:#94a3b8;font-weight:400;margin-left:4px}
+  
   input[type=text],input[type=password],input[type=url],input[type=number],select,textarea{
-    width:100%;background:#0b1120;color:#e5e7eb;border:1px solid rgba(148,163,184,.2);padding:11px 12px;border-radius:12px;font-size:14px;
-    outline:none;transition:.15s border-color,.15s background,.15s box-shadow;
+    width:100%;max-width:100%;box-sizing:border-box;
+    height:44px;background:#0b1120;color:#e5e7eb;
+    border:1px solid rgba(148,163,184,.25);padding:0 14px;border-radius:12px;font-size:14px;
+    outline:none;transition:all .15s ease;
   }
-  textarea{min-height:110px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
-  input:focus,select:focus,textarea:focus{border-color:rgba(99,102,241,.6);box-shadow:0 0 0 3px rgba(99,102,241,.2);background:#0b1225}
-  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}
+  select{cursor:pointer;background-color:#0b1120}
+  textarea{height:auto;min-height:120px;padding:12px 14px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  input:focus,select:focus,textarea:focus{border-color:rgba(99,102,241,.7);box-shadow:0 0 0 3px rgba(99,102,241,.25);background:#0b1225}
+  
+  .row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
   button{
-    cursor:pointer;border:0;padding:11px 16px;border-radius:12px;font-weight:700;font-size:14px;
+    cursor:pointer;border:0;padding:12px 18px;border-radius:12px;font-weight:700;font-size:14px;
     transition:transform .06s ease, filter .15s ease, box-shadow .15s;
     display:inline-flex;align-items:center;gap:8px;
   }
@@ -86,9 +96,10 @@ export const DASHBOARD_HTML = `<!doctype html>
   .b-success{background:linear-gradient(135deg,#059669,#10b981);color:white;box-shadow:0 10px 28px rgba(16,185,129,.28)}
   .b-ghost{background:rgba(148,163,184,.1);color:#cbd5e1;border:1px solid rgba(148,163,184,.2)}
   .b-warning{background:linear-gradient(135deg,#d97706,#f59e0b);color:#1b1200;box-shadow:0 10px 28px rgba(245,158,11,.25)}
-  .result{margin-top:16px;border-radius:14px;padding:16px 18px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;border:1px solid rgba(148,163,184,.15);background:#020617;color:#94a3b8}
+  .result{margin-top:18px;border-radius:14px;padding:16px 18px;font-size:13.5px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-word;max-height:360px;overflow:auto;border:1px solid rgba(148,163,184,.15);background:#020617;color:#94a3b8}
   .result.ok{background:rgba(22,101,52,.12);border-color:rgba(34,197,94,.3);color:#86efac}
   .result.err{background:rgba(127,29,29,.12);border-color:rgba(248,113,113,.3);color:#fca5a5}
+  
   table.endpoints{width:100%;border-collapse:separate;border-spacing:0;margin-top:14px;font-size:13.5px}
   table.endpoints th,table.endpoints td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(30,41,59,.8)}
   table.endpoints th{color:#94a3b8;font-size:12px;text-transform:uppercase;letter-spacing:.3px;font-weight:700}
@@ -105,11 +116,11 @@ export const DASHBOARD_HTML = `<!doctype html>
   .banner h3{margin:0 0 6px;font-size:14.5px}
   .banner ul{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#ddd6fe;font-size:13px}
   .banner code{color:#f5d0fe;background:rgba(217,70,239,.12);padding:2px 6px;border-radius:6px;border:1px solid rgba(244,114,182,.2)}
-  .srv-ok{color:#86efac}.srv-bad{color:#fca5a5}
-  .tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-  .tab{padding:8px 12px;border-radius:10px;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.18);color:#cbd5e1;cursor:pointer;font-weight:700;font-size:13px;user-select:none}
-  .tab.active{background:rgba(99,102,241,.22);border-color:rgba(99,102,241,.45);color:#c7d2fe}
-  .subg{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+  
+  .tabs{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+  .tab{padding:10px 16px;border-radius:12px;background:rgba(148,163,184,.08);border:1px solid rgba(148,163,184,.18);color:#cbd5e1;cursor:pointer;font-weight:700;font-size:14px;user-select:none;transition:all .15s}
+  .tab:hover{background:rgba(99,102,241,.14);color:#e2e8f0}
+  .tab.active{background:linear-gradient(135deg,rgba(99,102,241,.3),rgba(168,85,247,.25));border-color:rgba(99,102,241,.6);color:#ffffff;box-shadow:0 4px 16px rgba(99,102,241,.2)}
 </style>
 </head>
 <body>
@@ -119,7 +130,7 @@ export const DASHBOARD_HTML = `<!doctype html>
       <div class="logo">≋</div>
       <div class="title">
         <h1>Robo Filiados</h1>
-        <p>Shopee · Mercado Livre · WhatsApp em massa</p>
+        <p>Shopee · Mercado Livre · Robô Próprio WhatsApp Nativo</p>
       </div>
     </div>
     <div id="statusBadge" class="status"><span class="dot"></span><span id="badgeText">Iniciando…</span></div>
@@ -136,23 +147,24 @@ export const DASHBOARD_HTML = `<!doctype html>
   <div class="grid">
     <div class="card"><div class="lbl">Ambiente</div><div class="val"><span id="envVal" class="pill indigo">—</span></div></div>
     <div class="card"><div class="lbl">Porta (fallback)</div><div class="val"><span id="portVal" class="pill green">3000</span></div></div>
-    <div class="card"><div class="lbl">WhatsApp</div><div class="val"><span id="waVal" class="pill pink">—</span></div></div>
+    <div class="card"><div class="lbl">WhatsApp Engine</div><div class="val"><span id="waVal" class="pill pink">Baileys Nativo</span></div></div>
     <div class="card"><div class="lbl">Anti-Dupl (h)</div><div class="val"><span id="dupVal" class="pill amber">24h</span></div></div>
   </div>
 
   <section class="section">
-    <h2 class="s"><span class="ico">▦</span>Painel de Credenciais para Automação (Shopee + ML + Evolution)</h2>
-    <div style="color:#94a3b8;font-size:13.5px;margin:-6px 0 16px">Preencha abaixo as credenciais das plataformas. Salva em <b>memória singleton</b> (cold start Vercel apaga). Para permanentes, use Environment Variables no painel da Vercel/Firebase.</div>
+    <h2 class="s"><span class="ico">▦</span>Painel de Credenciais e Automação (Shopee + ML + Robô Próprio)</h2>
+    <div style="color:#94a3b8;font-size:13.5px;margin:-6px 0 18px">Preencha abaixo as credenciais. As informações são mantidas em memória singleton (ou configuradas via Environment Variables na Vercel/VPS).</div>
 
     <div class="tabs" role="tablist">
       <button type="button" class="tab active" data-tab="shopee">🛍️ Shopee</button>
       <button type="button" class="tab" data-tab="ml">🟡 Mercado Livre</button>
-      <button type="button" class="tab" data-tab="wa">💬 Evolution WhatsApp</button>
-      <button type="button" class="tab" data-tab="gr">👥 Grupos</button>
+      <button type="button" class="tab" data-tab="wa">🤖 Robô Próprio WhatsApp</button>
+      <button type="button" class="tab" data-tab="gr">👥 Grupos / Destinatários</button>
     </div>
 
     <form id="cfgForm" autocomplete="off" onsubmit="event.preventDefault();">
       <div class="cred-grid">
+        <!-- TAB SHOPEE -->
         <div class="cred-pane subg" data-pane="shopee">
           <div class="f w6"><label class="l">Shopee App ID <small>(Portal Dev Shopee)</small></label><input name="shopee_app_id" type="text" placeholder="ex: 123456" /></div>
           <div class="f w6"><label class="l">Shopee App Secret <small>(obtido no mesmo portal)</small></label><input name="shopee_app_secret" type="password" placeholder="••••••••••••••••" /></div>
@@ -162,6 +174,7 @@ export const DASHBOARD_HTML = `<!doctype html>
           </div>
         </div>
 
+        <!-- TAB MERCADO LIVRE -->
         <div class="cred-pane subg" data-pane="ml" style="display:none">
           <div class="f w6"><label class="l">ML Client ID <small>(Dev.Mercado Livre)</small></label><input name="ml_client_id" type="text" placeholder="ex: 1234567890123456" /></div>
           <div class="f w6"><label class="l">ML Client Secret</label><input name="ml_client_secret" type="password" placeholder="••••••••••••••••••••••" /></div>
@@ -172,12 +185,45 @@ export const DASHBOARD_HTML = `<!doctype html>
           </div>
         </div>
 
+        <!-- TAB ROBÔ PRÓPRIO WHATSAPP (BAILEYS NATIVO) -->
         <div class="cred-pane subg" data-pane="wa" style="display:none">
-          <div class="f w8"><label class="l">Evolution API Base URL <small>(com https://)</small></label><input name="evolution_url" type="url" placeholder="https://wa.seudominio.com.br" /></div>
-          <div class="f w4"><label class="l">Evolution Instance Name</label><input name="evolution_instance" type="text" placeholder="robofiliados" /></div>
-          <div class="f full"><label class="l">Evolution API Key <small>(Settings → API Keys)</small></label><input name="evolution_apikey" type="password" placeholder="Bearer que criou no Evolution" /></div>
+          <div class="f full">
+            <div style="background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.35);padding:16px 18px;border-radius:14px;color:#c7d2fe;margin-bottom:6px;">
+              <h3 style="margin:0 0 6px;font-size:15px;color:#a5b4fc;display:flex;align-items:center;gap:8px;">
+                🤖 Engine Nativo Baileys (Sem Evolution API)
+              </h3>
+              <p style="margin:0;font-size:13px;line-height:1.6;color:#e2e8f0;">
+                O robô utiliza a biblioteca <b>@whiskeysockets/baileys</b> integrada nativamente no projeto para conectar diretamente ao WhatsApp Web via WebSocket, sem mensalidades ou intermediários.
+              </p>
+              <div style="margin-top:10px;font-size:12.5px;color:#cbd5e1;line-height:1.55;">
+                📍 <b>O que você precisa para rodar:</b><br>
+                1. Execute o servidor Node.js na sua máquina ou VPS (<code>npm run dev</code> ou <code>npm start</code>).<br>
+                2. Escaneie o <b>QR Code</b> gerado no terminal/console na primeira execução.<br>
+                3. A sessão é salva na pasta de autenticação <code>./baileys_auth</code> (ou <code>./sessions</code>).
+              </div>
+            </div>
+          </div>
+          <div class="f w6">
+            <label class="l">Provedor Ativo</label>
+            <select name="whatsapp_provider">
+              <option value="baileys" selected>Baileys Nativo (@whiskeysockets/baileys) — Robô Próprio</option>
+              <option value="evolution">Evolution API (Opcional)</option>
+            </select>
+          </div>
+          <div class="f w6">
+            <label class="l">Pasta da Sessão Local <small>(armazenamento do QR Code)</small></label>
+            <input name="wa_session_folder" type="text" value="./baileys_auth" placeholder="./baileys_auth" />
+          </div>
+          <div class="f full">
+            <label class="l">Status da Sessão Nativa Baileys</label>
+            <div style="background:#020617;border:1px solid rgba(148,163,184,.2);padding:14px 16px;border-radius:12px;font-size:13.5px;color:#a5b4fc;display:flex;align-items:center;justify-content:space-between;">
+              <span>🟢 Status: <b>Baileys Provider Nativo Configurado</b></span>
+              <span class="pill green">Pronto para Enviar</span>
+            </div>
+          </div>
         </div>
 
+        <!-- TAB GRUPOS -->
         <div class="cred-pane subg" data-pane="gr" style="display:none">
           <div class="f full">
             <label class="l">Grupos / Contatos (1 por linha) · formato JID:<br><small>Grupos: <code style="color:#c4b5fd">120363123456789012@g.us</code> · Contatos: <code style="color:#c4b5fd">5511999998888@c.us</code></small></label>
@@ -191,7 +237,7 @@ export const DASHBOARD_HTML = `<!doctype html>
         <button id="saveBtn" type="button" class="b-primary">💾 Salvar Credenciais em Memória</button>
         <button id="campaignBtn" type="button" class="b-success">▶️ Autenticar, Buscar e Publicar Campanha Completa</button>
         <button id="healthBtn" type="button" class="b-ghost">🧪 Testar /health</button>
-        <button id="groupsBtn" type="button" class="b-ghost">👥 Listar Grupos (Evolution)</button>
+        <button id="groupsBtn" type="button" class="b-ghost">👥 Listar Grupos</button>
       </div>
 
       <div id="cfgResult" class="result" aria-live="polite">Aguardando ação. Clique em "💾 Salvar Credenciais" para começar ou "▶️ Campanha Completa" para o fluxo 3-em-1.</div>
@@ -200,7 +246,7 @@ export const DASHBOARD_HTML = `<!doctype html>
 
   <section class="section">
     <h2 class="s"><span class="ico">▶</span>Acionar Campanha Manual (rápida, usa credenciais salvas acima)</h2>
-    <div class="cred-grid">
+    <div class="subg" style="width:100%">
       <div class="f w4"><label class="l">Plataforma</label>
         <select id="platforms">
           <option value="both">Shopee + Mercado Livre (ambas)</option>
@@ -226,12 +272,11 @@ export const DASHBOARD_HTML = `<!doctype html>
   </section>
 
   <div class="banner">
-    <h3>ℹ️ Avisos Serverless (Vercel/Firebase Functions)</h3>
+    <h3>ℹ️ Avisos de Funcionamento</h3>
     <ul>
-      <li><b>Credenciais painel acima ficam só em memória</b>: Cold start (~30min sem tráfego) apaga. Use <code>Vercel/Firebase Env Vars</code> para fixar permanente.</li>
-      <li><b>Sem workers BullMQ/SQLite persistente</b>: funções não tem estado compartilhado. Migre DB para <code>Supabase/Postgres (Neon)</code> / Firestore.</li>
-      <li><b>Envio em massa (horários fixos / cron)</b>: use <code>Vercel Cron</code> ou <code>Cloud Scheduler</code> batendo em <code>/api/campaigns/run</code>.</li>
-      <li><b>Sessões WhatsApp Baileys locais</b> não funcionam em efêmero. Use <code>Evolution API</code> em VM/Cloud Run com volume persistente.</li>
+      <li><b>Robô Próprio Baileys (Recomendado)</b>: Conecta diretamente ao WhatsApp Web via WebSocket nativo no Node.js. Mantém a sessão salva na pasta <code>baileys_auth</code>.</li>
+      <li><b>Credenciais do painel acima ficam em memória singleton</b>: Para salvar dados permanentes sem precisar digitar novamente, configure as <code>Environment Variables</code> no seu servidor ou na Vercel.</li>
+      <li><b>Envio em massa automatizado (Cron)</b>: Configure o Cloud Scheduler ou Vercel Cron acionando periodicamente o endpoint <code>/api/campaigns/run</code> via HTTP POST.</li>
     </ul>
   </div>
 </div>
@@ -282,11 +327,11 @@ export const DASHBOARD_HTML = `<!doctype html>
     { m:'GET',    r:'/',                   d:'Dashboard UI atual (esta página).' },
     { m:'GET',    r:'/api/health',         d:'Status do servidor + credenciais setadas.' },
     { m:'GET',    r:'/api/config',         d:'MÁSCARAS das credenciais (nunca retorna valores reais).' },
-    { m:'POST',   r:'/api/config',         d:'Grava credenciais em memória singleton (shopee/ml/evolution/groups).' },
+    { m:'POST',   r:'/api/config',         d:'Grava credenciais em memória singleton (shopee/ml/groups).' },
     { m:'POST',   r:'/api/campaigns/run',  d:'Inicia campanha (body JSON: platforms, keyword, maxProducts, groups).' },
     { m:'PATCH',  r:'/api/campaigns/:id/status', d:'Atualiza status campanha (pausar/continuar).' },
     { m:'GET',    r:'/api/products',       d:'Pesquisa produtos afiliados (query keyword, plataformas).' },
-    { m:'GET',    r:'/api/groups',         d:'Lista grupos/contatos (Evolution API se configurado).' },
+    { m:'GET',    r:'/api/groups',         d:'Lista grupos/contatos do WhatsApp.' },
   ];
   const TBMAP = {GET:'mGET',POST:'mPOST',PATCH:'mPATCH'};
   const tb = document.getElementById('tbEndpoints');
@@ -397,7 +442,7 @@ export const DASHBOARD_HTML = `<!doctype html>
     const dup = document.getElementById('dupVal');
     env.textContent = (b.env || b.NODE_ENV || 'production').toString().toUpperCase();
     port.textContent = String(b.port || b.PORT || '—');
-    wa.textContent = (b.whatsapp || 'provider: ' + (b.whatsappProvider || 'evolution'));
+    wa.textContent = (b.whatsapp || 'Baileys Nativo');
     dup.textContent = (b.antiDuplicateHours || '24') + 'h';
     if (!ok) {
       const box = document.getElementById('initErrorBox');
@@ -411,6 +456,5 @@ export const DASHBOARD_HTML = `<!doctype html>
 })();
 </script>
 </body>
-</html>`;
-
-export default DASHBOARD_HTML;
+</html>
+`;
