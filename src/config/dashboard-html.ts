@@ -509,6 +509,8 @@ export const DASHBOARD_HTML = `<!doctype html>
   document.getElementById('groupsBtn').addEventListener('click', async () => {
     const r = await safeFetch('/api/groups');
     prettyResult('cfgResult', r.ok ? r.body : { status:r.status, ...r.body }, !r.ok);
+  });
+
   const connectWaEl = document.getElementById('connectWaBtn');
   if (connectWaEl) {
     connectWaEl.addEventListener('click', async () => {
