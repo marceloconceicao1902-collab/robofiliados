@@ -1,0 +1,108 @@
+======================================================================
+  1-CLICK DEPLOY VIA CLI OFICIAL (GitHub + Vercel + Firebase)
+  RODAR EM: PowerShell NORMAL (NÃO do IDE / Sandbox)
+  Iniciar → digite PowerShell → abra → cole TUDO abaixo (Ctrl+V)
+======================================================================
+
+# ============================================================
+# (0) PROTECOES: desabilita telemetria, cache em SSD/TEMP
+# ============================================================
+$PROJ = "G:\Meu Drive\Robo de Afiliado (Shoppe e ML)"
+$TC   = "$PROJ\.tool-configs"
+$TMP  = "C:\Users\marce\AppData\Local\Temp"
+
+New-Item -ItemType Directory -Force -Path "$TC\gh"       | Out-Null
+New-Item -ItemType Directory -Force -Path "$TC\vercel-global" | Out-Null
+New-Item -ItemType Directory -Force -Path "$TC\xf"       | Out-Null
+New-Item -ItemType Directory -Force -Path "$TMP\npm-cache"   | Out-Null
+
+$env:GH_CONFIG_DIR            = "$TC\gh"
+$env:VERCEL_TELEMETRY_DISABLED = "1"
+$env:FIREBASE_CLI_DISABLE_ANALYTICS = "true"
+$env:npm_config_cache         = "$TMP\npm-cache"
+$env:npm_config_update_notifier = "false"
+
+Set-Location $PROJ
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  1/3 AUTH: GITHUB (gh CLI)" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  -> URL: https://github.com/login/device"
+Write-Host "  -> Copie/Cole o CODIGO de 8 DIGITOS abaixo"
+Write-Host "  -> Login conta: marceloconceicao1902-collab (owner repo)"
+Write-Host ""
+
+# GitHub: gh auth login (OAuth web device code)
+& gh auth login --hostname github.com --git-protocol https --scopes repo --web --insecure-storage
+
+# Extrai token GITHUB e exporta
+$env:GITHUB_TOKEN = (& gh auth token --hostname github.com).Trim()
+Write-Host ""
+Write-Host "    ✅ GITHUB_TOKEN obtido (length=$($env:GITHUB_TOKEN.Length))" -ForegroundColor Green
+
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  2/3 AUTH: VERCEL (vercel CLI)" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  -> Abrirá navegador (ou exibe link)"
+Write-Host "  -> Login conta Vercel + Authorize CLI"
+Write-Host ""
+
+# Vercel login (OAuth), com global config LOCAL (fora de %APPDATA%)
+& vercel login --global-config "$TC\vercel-global"
+
+# Extrai o token do arquivo JSON de config
+$vercelToken = ""
+Get-ChildItem "$TC\vercel-global" -File -Recurse -Filter *.json -ErrorAction SilentlyContinue | ForEach-Object {
+  $c = Get-Content $_.FullName -Raw
+  if ($c -match '"token"\s*:\s*"([A-Za-z0-9_\-]{20,})"') { $vercelToken = $matches[1] }
+}
+if (-not $vercelToken -or $vercelToken.Length -lt 20) {
+  Write-Host "Cole seu TOKEN VERCEL manual: " -ForegroundColor Yellow -NoNewline
+  $vercelToken = (Read-Host).Trim()
+}
+$env:VERCEL_TOKEN = $vercelToken
+Write-Host "    ✅ VERCEL_TOKEN obtido (length=$($env:VERCEL_TOKEN.Length))" -ForegroundColor Green
+
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  3/3 AUTH: FIREBASE (firebase login:ci)" -ForegroundColor Cyan
+Write-Host "========================================" -ForegroundColor Cyan
+Write-Host "  -> Abrirá navegador Google -> faca login"
+Write-Host "  -> Volte e COPIE/COLE o token que IMPRIMIR no terminal (comeca com 1//0)"
+Write-Host ""
+
+# Firebase login:ci (IMPRESSAO do token CI no stdout)
+$fbOut = (& npx --yes firebase-tools login:ci --no-localhost 2>&1)
+$fbOut | ForEach-Object { Write-Host "    $_" }
+$fbToken = ""
+$fbOut -join "`n" | ForEach-Object { if ($_ -match '(1//[0-9A-Za-z_\-]{10,}|1/[0-9A-Za-z_\-]{10,})') { $fbToken = $matches[0] } }
+if (-not $fbToken -or $fbToken.Length -lt 25) {
+  Write-Host ""
+  Write-Host "Cole seu FIREBASE_TOKEN (1//0...) INTEIRO: " -ForegroundColor Yellow -NoNewline
+  $fbToken = (Read-Host).Trim()
+}
+$env:FIREBASE_TOKEN = $fbToken
+Write-Host ""
+Write-Host "    ✅ FIREBASE_TOKEN obtido (length=$($env:FIREBASE_TOKEN.Length))" -ForegroundColor Green
+
+Write-Host ""
+Write-Host "========================================" -ForegroundColor Magenta
+Write-Host "  3 AUTH CONCLUIDAS → INICIANDO DEPLOY" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
+Write-Host ""
+
+# ============================================================
+# DEPLOY FINAL (chama scripts/deploy-tokens.ps1)
+# ============================================================
+& .\scripts\deploy-tokens.ps1 -GithubOwner "marceloconceicao1902-collab" -GithubRepo "robofiliados" -VercelProject "robofiliados"
+
+# ============================================================
+# FIM
+# ============================================================
+Write-Host ""
+Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+Write-Host "  FIM — Todos os 3 ambientes online!" -ForegroundColor Green
+Write-Host "═══════════════════════════════════════════════════════════" -ForegroundColor Cyan
+Pause
