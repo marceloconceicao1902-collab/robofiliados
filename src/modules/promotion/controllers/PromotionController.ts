@@ -4,6 +4,7 @@ import PromotionBotService from '../services/PromotionBotService';
 import GroupService from '../../group/services/GroupService';
 import { AppError, ValidationError } from '../../../shared/errors/AppError';
 import { logger } from '../../../config/logger';
+import { env } from '../../../config/env';
 import { notifyWebhook } from '../../../shared/utils/webhook';
 
 const runCampaignSchema = z.object({
@@ -47,9 +48,18 @@ export class PromotionController {
 
   private async health(_req: FastifyRequest, reply: FastifyReply): Promise<void> {
     reply.send({
-      ok: true,
-      whatsappConnected: this.bot.whatsApp.isConnected(),
-      timestamp: new Date().toISOString(),
+      status: 'ok',
+      env: env.NODE_ENV,
+      port: env.PORT,
+      whatsapp: env.WHATSAPP_PROVIDER + (this.bot.whatsApp?.isConnected?.() ? ' (connected)' : ' (disconnected)'),
+      whatsappConnected: this.bot.whatsApp?.isConnected?.() ?? false,
+      antiDuplicateHours: env.ANTI_DUPLICATE_WINDOW_HOURS,
+      sendMinDelaySec: env.SEND_MIN_DELAY,
+      sendMaxDelaySec: env.SEND_MAX_DELAY,
+      maxPerHour: env.SEND_MAX_PER_HOUR,
+      shopeeTag: env.SHOPEE_AFFILIATE_TAG ? 'SET' : 'NOT SET',
+      mlTag: env.ML_AFFILIATE_TAG ? 'SET' : 'NOT SET',
+      time: new Date().toISOString(),
     });
   }
 

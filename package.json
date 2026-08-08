@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "echo 'Build standalone (tsc) do servidor long-running. Vercel ignora (buildCommand=false).'",
+    "build:standalone": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& tsc",
     "start": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& node dist/index.js",
     "install:all": "npm install --include=dev --legacy-peer-deps --force",
     "prisma:generate": "set NODE_PATH=C:\\Users\\marce\\AppData\\Local\\Temp\\affiliate-install\\node_modules&& prisma generate",

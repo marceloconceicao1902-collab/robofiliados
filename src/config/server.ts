@@ -2,6 +2,7 @@ import fastify, { type FastifyInstance, type FastifyServerOptions, type FastifyR
 import { env } from './env';
 import { logger } from './logger';
 import PromotionController from '../modules/promotion/controllers/PromotionController';
+import { DASHBOARD_HTML } from './dashboard-html';
 
 export function createServer(
   controller: PromotionController = new PromotionController(),
@@ -17,12 +18,12 @@ export function createServer(
   });
 
   app.get('/', async (_: FastifyRequest, reply: FastifyReply) => {
-    reply.send({
-      name: 'Affiliate Promotion Bot API',
-      version: '1.0.0',
-      docs: '/api/health',
-      time: new Date().toISOString(),
-    });
+    reply
+      .type('text/html; charset=utf-8')
+      .header('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+      .header('Pragma', 'no-cache')
+      .header('Expires', '0')
+      .send(DASHBOARD_HTML);
   });
 
   controller.registerRoutes(app);
