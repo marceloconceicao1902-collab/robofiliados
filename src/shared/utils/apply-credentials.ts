@@ -1,4 +1,4 @@
-import { runtimeConfig, type RuntimeConfigShape } from '../config/runtime-config';
+import { runtimeConfig, type RuntimeConfigShape } from '../../config/runtime-config';
 
 export function applyCredentialsToEnv(): RuntimeConfigShape {
   const cfg = runtimeConfig.get();
