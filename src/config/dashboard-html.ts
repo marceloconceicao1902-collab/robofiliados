@@ -183,6 +183,49 @@ export const DASHBOARD_HTML = `<!doctype html>
     </div>
   </section>
 
+  <section class="section" style="background:linear-gradient(135deg,rgba(15,23,42,.85),rgba(30,41,59,.75));border-color:rgba(148,163,184,.2)">
+    <h2 class="s"><span class="ico">⚡</span> Estratégia de Busca, Filtros e Resultados da Automação</h2>
+    <div style="color:#cbd5e1;font-size:13.5px;margin:-6px 0 16px">Entenda como o robô busca ofertas, converte links de afiliados e garante entregas seguras e sem duplicações nos grupos.</div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px">
+      <!-- PASSO 1: BUSCA E CAPTURA -->
+      <div style="background:#0b1120;border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#60a5fa;text-transform:uppercase;letter-spacing:.5px">ETAPA 1</div>
+        <h3 style="margin:6px 0;font-size:15px;color:#f8fafc">🛍️ Captura Inteligente (Shopee & ML)</h3>
+        <p style="margin:0;font-size:12.5px;color:#94a3b8;line-height:1.55">
+          O robô faz a busca do termo digitado nas APIs e HTML das plataformas. Extrai foto HD, título completo, valor original, valor promocional e calcula a % real de desconto.
+        </p>
+      </div>
+
+      <!-- PASSO 2: MONETIZACAO E ENCURTAMENTO -->
+      <div style="background:#0b1120;border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#c084fc;text-transform:uppercase;letter-spacing:.5px">ETAPA 2</div>
+        <h3 style="margin:6px 0;font-size:15px;color:#f8fafc">💰 Link de Afiliado + Encurtador</h3>
+        <p style="margin:0;font-size:12.5px;color:#94a3b8;line-height:1.55">
+          Injeta automaticamente sua tag de afiliado (<code>SHOPEE_TAG</code> / <code>ML_TAG</code>) no link do produto e encurta a URL via <b>TinyURL</b> para alta taxa de cliques no WhatsApp.
+        </p>
+      </div>
+
+      <!-- PASSO 3: FILTRO ANTI-BAN E DUPLICIDADE -->
+      <div style="background:#0b1120;border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#facc15;text-transform:uppercase;letter-spacing:.5px">ETAPA 3</div>
+        <h3 style="margin:6px 0;font-size:15px;color:#f8fafc">🛡️ Trava Anti-Duplicidade & Delays</h3>
+        <p style="margin:0;font-size:12.5px;color:#94a3b8;line-height:1.55">
+          Verifica no banco de dados se a promoção foi enviada nas últimas <b>24h</b>. Aplica atrasos humanos aleatórios (<b>30s a 90s</b>) entre envios para evitar banimento.
+        </p>
+      </div>
+
+      <!-- PASSO 4: ENTREGA E RESULTADOS -->
+      <div style="background:#0b1120;border:1px solid rgba(148,163,184,.15);border-radius:14px;padding:16px">
+        <div style="font-size:12px;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:.5px">ETAPA 4</div>
+        <h3 style="margin:6px 0;font-size:15px;color:#f8fafc">📊 Publicação & Histórico</h3>
+        <p style="margin:0;font-size:12.5px;color:#94a3b8;line-height:1.55">
+          Dispara a mensagem formatada com foto, preço e link encurtado nos grupos cadastrados. Registra o status de envio para acompanhamento no log e webhook.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <h2 class="s"><span class="ico">▦</span>Painel de Credenciais e Automação (Shopee + ML + Robô Próprio)</h2>
     <div style="color:#94a3b8;font-size:13.5px;margin:-6px 0 18px">Preencha abaixo as credenciais. As informações são mantidas em memória singleton (ou configuradas via Environment Variables na Vercel/VPS).</div>
