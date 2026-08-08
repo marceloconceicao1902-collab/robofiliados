@@ -3,7 +3,7 @@
   "framework": null,
   "regions": ["iad1"],
   "installCommand": "npm install --include=dev --legacy-peer-deps --force",
-  "buildCommand": false,
+  "buildCommand": null,
   "functions": {
     "api/**/*.ts": {
       "memory": 512,
