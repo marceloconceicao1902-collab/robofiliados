@@ -228,7 +228,11 @@ export const DASHBOARD_HTML = `<!doctype html>
 
   <section class="section">
     <h2 class="s"><span class="ico">▦</span>Painel de Credenciais e Automação (Shopee + ML + Robô Próprio)</h2>
-    <div style="color:#94a3b8;font-size:13.5px;margin:-6px 0 18px">Preencha abaixo as credenciais. As informações são mantidas em memória singleton (ou configuradas via Environment Variables na Vercel/VPS).</div>
+    <div style="color:#94a3b8;font-size:13.5px;margin:-6px 0 14px">Preencha abaixo as credenciais. As informações são mantidas em memória singleton (ou configuradas via Environment Variables na Vercel/VPS).</div>
+
+    <div style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:12px 16px;color:#a7f3d0;font-size:13px;margin-bottom:16px;line-height:1.5">
+      💡 <b>Sem chaves de API oficiais? Não tem problema!</b> O sistema possui <b>Web Scraping inteligente nativo</b>. Você pode colar o link direto de qualquer produto ou preencher apenas a sua <b>Tag de Afiliado</b> (nas abas Shopee/ML) sem precisar de App ID, App Secret ou Access Tokens!
+    </div>
 
     <div class="tabs" role="tablist">
       <button type="button" class="tab active" data-tab="shopee">🛍️ Shopee</button>
